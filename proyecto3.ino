@@ -47,6 +47,8 @@ void loop()
 {
   if(MOTOR == nivel[0]){
     titilar(D1,2);
+  }else{
+    digitalWrite(D1, LOW);
   }
 
   if(P == OP){
@@ -108,13 +110,13 @@ void decremento() {
 
 void ciclo() {
   if(MOTOR == 0) {
-    for(char = 0; i < 19; i++) {
+    for(char i = 0; i < 19; i++) {
       titilar(D2, 6);
       analogWrite(MOTOR, nivel[i]);
     }
   }
   titilar(D3, 60);
-  for(char = 19; i > 0; i--) {
+  for(char i = 19; i > 0; i--) {
       titilar(D4, 8);
       analogWrite(MOTOR, nivel[i]);
     }
