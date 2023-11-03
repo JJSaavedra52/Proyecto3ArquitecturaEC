@@ -40,12 +40,12 @@ void setup()
 
   //Configuración de salida e inicialización para el motor
   pinMode(MOTOR, OUTPUT);
-  analogWrite(MOTOR, nivel[0]);
+  analogWrite(MOTOR, nivel[contador]);
 }
 
 void loop()
 {
-  if(MOTOR == nivel[0]){
+  if(contador == 0){
     titilar(D1,2);
   }else{
     digitalWrite(D1, LOW);
