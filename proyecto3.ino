@@ -46,7 +46,7 @@ void setup()
 void loop()
 {
   if(MOTOR == nivel[0]){
-    titilar(D1,1);
+    titilar(D1,2);
   }
 
   if(P == OP){
@@ -73,10 +73,8 @@ void loop()
 //Función de titilar, recibe el pin del diodo y la veces que lo hará
 void titilar(char diodo, char n) {
   for (int i = 0; i < n; i++) {
-    digitalWrite(diodo, HIGH);
-    delay(500);
-    digitalWrite(diodo, LOW); 
-    delay(500);
+    delay(250);
+    digitalWrite(diodo, !digitalRead(diodo)); 
   }
 }
 
@@ -91,7 +89,7 @@ void arranque() {
 }
 
 void incremento() {
-  titilar(D2,2);
+  titilar(D2,4);
   contador++;
   if(contador > 19){
     contador = 19;
@@ -100,7 +98,7 @@ void incremento() {
 }
 
 void decremento() {
-  titilar(D4,2);
+  titilar(D4,4);
   contador--;
   if(contador < 0){
     contador = 0;
@@ -110,6 +108,15 @@ void decremento() {
 
 void ciclo() {
   if(MOTOR == 0) {
-    
+    for(char = 0; i < 19; i++) {
+      titilar(D2, 6);
+      analogWrite(MOTOR, nivel[i]);
+    }
   }
+  titilar(D3, 60);
+  for(char = 19; i > 0; i--) {
+      titilar(D4, 8);
+      analogWrite(MOTOR, nivel[i]);
+    }
+  contador = 0;
 }
