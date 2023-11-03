@@ -1,32 +1,30 @@
-//Defines de botones
-#define P 13
-#define	A 12
-#define	I 11
-#define	R 10
-#define	C 9
-#define OP 1
+#include <SoftwareSerial.h>
+
+//Defines comunicación serial
+#define RxPin 10
+#define TxPin 11
 
 //Defines de diodos
-#define D1 8
-#define D2 7
+#define D1 4
+#define D2 5
 #define D3 6
-#define D4 5
+#define D4 7
 
 //Define del motor
-#define MOTOR 3
+#define MOTOR 9
 
 //Variables globales
 char contador = 0;
 const unsigned char nivel[] = {0, 13, 26, 40, 53, 67, 80, 93, 107, 120, 134, 147, 161, 174, 187, 201, 214, 228, 241, 255};
+char button;
+SoftwareSerial bluetooth = SoftwareSerial(RxPin, TxPin);
 
-void setup()
-{
-  //Configuración de entrada para botones
-  pinMode(P, INPUT);
-  pinMode(A, INPUT);
-  pinMode(I, INPUT);
-  pinMode(R, INPUT);
-  pinMode(C, INPUT);
+void setup(){ 
+  //Configuración comunicación serial
+  pinMode(RxPin, INPUT);
+  pinMode(TxPin, OUTPUT);
+  Serial.begin(9600, SERIAL_8N1);
+  bluetooth.begin(9600);
 
   //Configuración de salida e inicialización para diodos
   pinMode(D1, OUTPUT);
@@ -43,32 +41,39 @@ void setup()
   analogWrite(MOTOR, nivel[contador]);
 }
 
-void loop()
-{
+void loop() {
   if(contador == 0){
     titilar(D1,2);
   }else{
     digitalWrite(D1, LOW);
   }
 
-  if(P == OP){
-    parada();
-  }
 
-  if(A == OP){
-    arranque();
-  }
+  if (Serial.available()) button = Serial.readStringUntil(",").charAt(0);
+  else if (bluetooth.available()) button = bluetooth.readStringUntil(",").charAt(0);
+  else return;
 
-  if(I == OP){
-    incremento();
-  }
+  Serial.write(button);
 
-  if(R == OP){
-    decremento();
-  }
-
-  if(C == OP){
-    ciclo();
+  switch (button) {
+    case 'P':
+      parada();
+      break;
+    case 'A':
+      arranque();
+      break;
+    case 'I':
+      incremento();
+      break;
+    case 'R':
+      decremento();
+      break;
+    case 'C':
+      ciclo();
+      break;
+    case 'O':
+      oprimido();
+      break;
   }
 }
 
@@ -121,4 +126,8 @@ void ciclo() {
       analogWrite(MOTOR, nivel[i]);
     }
   contador = 0;
+}
+
+void oprimido(){
+  
 }
