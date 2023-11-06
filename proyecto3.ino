@@ -1,4 +1,5 @@
-//#include <SoftwareSerial.h>
+//Imports
+#include <SoftwareSerial.h>
 
 //Defines comunicación serial
 #define RxPin 10
@@ -18,14 +19,14 @@ char contador = 0;
 const unsigned char nivel[] = {0, 13, 26, 40, 53, 67, 80, 93, 107, 120, 134, 147, 161, 174, 187, 201, 214, 228, 241, 255};
 bool estadoMotor = true; 
 char accion;
-//SoftwareSerial bluetooth = SoftwareSerial(RxPin, TxPin);
+SoftwareSerial bluetooth = SoftwareSerial(RxPin, TxPin);
 
 void setup(){ 
   //Configuración comunicación serial
   pinMode(RxPin, INPUT);
   pinMode(TxPin, OUTPUT);
   Serial.begin(9600, SERIAL_8N1);
-  //bluetooth.begin(9600);
+  bluetooth.begin(9600);
 
   //Configuración de salida e inicialización para diodos
   pinMode(D1, OUTPUT);
@@ -44,21 +45,19 @@ void setup(){
 
 
 void loop() {
-  if(Serial.available()>0){
-	accion = Serial.read();
-  }
-  
   if(estadoMotor == false || contador == 0){
     titilar(D1,1);
   }else{
     digitalWrite(D1, LOW);
   }
 
-  //if (Serial.available()) button = Serial.readStringUntil(",").charAt(0);
-  //else if (bluetooth.available()) button = bluetooth.readStringUntil(",").charAt(0);
-  //else return;
-	
-  //Serial.write(button);
+  if(Serial.available() > 0){
+	  accion = Serial.read();
+  } else if(bluetooth.available()) {
+    accion = bluetooth.read();
+  } else{
+    return;
+  }
 
   switch (accion) {
     case 'P':
@@ -99,12 +98,14 @@ void titilar(char diodo, char n) {
 void parada() {
   analogWrite(MOTOR, nivel[0]);
   estadoMotor = false;
+  Serial.println("Detenido");
 }
 
 //Función de arranque
 void arranque() {
   analogWrite(MOTOR, nivel[contador]);
   estadoMotor = true;
+  Serial.println("Nivel " + contador);
 }
 
 //Función de incremento de velocidad
@@ -117,6 +118,7 @@ void incremento() {
     	contador = 19;
   	}
   	analogWrite(MOTOR, nivel[contador]);
+    Serial.println("Nivel " + contador);
   }
 }
 
@@ -130,11 +132,13 @@ void decremento() {
     contador = 0;
   }
   analogWrite(MOTOR, nivel[contador]);
+  Serial.println("Nivel " + contador);
   }
 }
 
 void ciclo() {
   if(estadoMotor == false || contador == 0) {
+    Serial.println("Ciclo");
     for(char i = 0; i <= 19; i++) {
       titilar(D2, 3);
       analogWrite(MOTOR, nivel[i]);
@@ -148,5 +152,6 @@ void ciclo() {
     }
     contador = 0;
     estadoMotor = true;
+    Serial.println("Nivel " + contador);
   	}
 }
