@@ -43,7 +43,6 @@ void setup(){
   analogWrite(MOTOR, nivel[contador]);
 }
 
-
 void loop() {
   if(estadoMotor == false || contador == 0){
     titilar(D1,1);
@@ -51,7 +50,7 @@ void loop() {
     digitalWrite(D1, LOW);
   }
 
-  if(Serial.available() > 0){
+  if(Serial.available()) {
 	  accion = Serial.read();
   } else if(bluetooth.available()) {
     accion = bluetooth.read();
@@ -105,7 +104,8 @@ void parada() {
 void arranque() {
   analogWrite(MOTOR, nivel[contador]);
   estadoMotor = true;
-  Serial.println("Nivel " + contador);
+  Serial.print("Nivel ");
+  Serial.println("Reestablecido");
 }
 
 //Función de incremento de velocidad
@@ -118,7 +118,8 @@ void incremento() {
     	contador = 19;
   	}
   	analogWrite(MOTOR, nivel[contador]);
-    Serial.println("Nivel " + contador);
+    Serial.print("Nivel ");
+    Serial.println("Aumento");
   }
 }
 
@@ -132,7 +133,8 @@ void decremento() {
     contador = 0;
   }
   analogWrite(MOTOR, nivel[contador]);
-  Serial.println("Nivel " + contador);
+  Serial.print("Nivel ");
+  Serial.println("Decremento");
   }
 }
 
@@ -152,6 +154,7 @@ void ciclo() {
     }
     contador = 0;
     estadoMotor = true;
-    Serial.println("Nivel " + contador);
+    Serial.print("Nivel ");
+    Serial.println("0");
   	}
 }
